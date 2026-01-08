@@ -260,7 +260,7 @@ i32 EWLMallocLinear(const void *instance, uint32_t size, EWLLinearMem_t *info)
 	info->busAddress = (ptr_t)info->virtualAddress;
 
 	inst->mem_cnt += size;
-	LOG_DBG("allocated %8d bytes --> %p / 0x%x. Total : %d", size_aligned,
+	LOG_INF("allocated %8d bytes --> %p / 0x%x. Total : %d", size_aligned,
 		(void *)info->virtualAddress, info->busAddress, inst->mem_cnt);
 
 	return EWL_OK;
@@ -278,6 +278,7 @@ void EWLFreeLinear(const void *instance, EWLLinearMem_t *info)
 		if (inst->aligned_chunks[i] == info->virtualAddress) {
 			if (inst->chunks[i] != NULL) {
 				EWL_HEAP_ALIGNED_FREE(inst->chunks[i]);
+				LOG_INF("EWLFreeLinear %p", (void*)inst->chunks[i]);
 			}
 			break;
 		}
@@ -321,6 +322,7 @@ void EWLfree(void *p)
 	if (p != NULL) {
 		EWL_HEAP_ALIGNED_FREE(p);
 	}
+	LOG_INF("EWLfree %p", (void*)p);
 }
 
 void *EWLcalloc(uint32_t n, uint32_t s)
@@ -697,7 +699,7 @@ static int stm32_venc_set_stream(const struct device *dev, bool enable, enum vid
 	if (!enable) {
 		/* Stop VENC */
 		encoder_end(data);
-		LOG_DBG("frames=%d irq=%d fuse=%d", data->frame_nb, inst->irq_cnt,
+		LOG_INF("frames=%d irq=%d fuse=%d", data->frame_nb, inst->irq_cnt,
 			inst->irq_fuse_cnt);
 	}
 
